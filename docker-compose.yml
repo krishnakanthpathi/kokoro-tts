@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  kokoro-tts:
+    build: .
+    container_name: kokoro-tts-service
+    ports:
+      - "8998:8998"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8998
+      - DATABASE_PATH=/app/data/app.db
+      - ADMIN_PASSWORD=admin123
+      - LOCALHOST_RATE_LIMIT=120
+      # Optional: set a default voice, speed, or lang code if desired
+      # - DEFAULT_VOICE=af_heart
+      # - DEFAULT_SPEED=1.0
+      # - DEFAULT_LANG=a
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

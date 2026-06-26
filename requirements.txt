@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pydantic
+torch
+transformers
+numpy
+soundfile
+huggingface_hub
+loguru
+attr
+spacy
+misaki==0.7.4
+phonemizer
+num2words
