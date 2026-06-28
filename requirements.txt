@@ -12,3 +12,9 @@ spacy
 misaki==0.7.4
 phonemizer
 num2words
+fugashi
+unidic-lite
+pypinyin
+jieba
+jaconv
+mojimoji

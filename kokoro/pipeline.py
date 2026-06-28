@@ -431,7 +431,8 @@ class KPipeline:
                     if not chunk.strip():
                         continue
                         
-                    ps, _ = self.g2p(chunk)
+                    g2p_res = self.g2p(chunk)
+                    ps = g2p_res[0] if isinstance(g2p_res, tuple) else g2p_res
                     if not ps:
                         continue
                     elif len(ps) > 510:

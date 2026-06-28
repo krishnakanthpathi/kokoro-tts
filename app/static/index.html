@@ -97,7 +97,6 @@
                 </div>
             </div>
             
-            <!-- Navigation -->
             <nav class="flex-1 px-4 py-6 space-y-1.5">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 bg-zinc-900 text-white border-l-2 border-accentBlue">
                     <i class="fa-solid fa-chart-line w-5 text-center"></i>
@@ -110,6 +109,10 @@
                 <button onclick="switchTab('logs')" id="nav-logs" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 text-gray-400 hover:bg-zinc-900 hover:text-white border-l-2 border-transparent">
                     <i class="fa-solid fa-receipt w-5 text-center"></i>
                     <span>Request Logs</span>
+                </button>
+                <button onclick="switchTab('sandbox')" id="nav-sandbox" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 text-gray-400 hover:bg-zinc-900 hover:text-white border-l-2 border-transparent">
+                    <i class="fa-solid fa-flask w-5 text-center"></i>
+                    <span>TTS Sandbox</span>
                 </button>
             </nav>
             
@@ -282,6 +285,72 @@
                     </div>
                 </div>
 
+                <!-- Tab: Sandbox -->
+                <div id="tab-sandbox-content" class="tab-content hidden space-y-6">
+                    <div class="bg-darkCard border border-darkBorder rounded-xl p-6 flex flex-col lg:flex-row gap-8 hover:border-zinc-700 transition duration-200">
+                        <!-- Controls Form -->
+                        <div class="flex-1 space-y-5">
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-white border-b border-darkBorder pb-2">Synthesis Controls</h3>
+                            
+                            <div>
+                                <label for="sandbox-voice" class="block text-xs font-semibold text-gray-400 mb-1.5">Voice Profile</label>
+                                <select id="sandbox-voice" onchange="updateLangCodeFromVoice()" class="w-full bg-zinc-900 border border-darkBorder rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-accentBlue">
+                                    <option value="af_heart" selected>af_heart (US Female Default)</option>
+                                    <option value="af_bella">af_bella (US Female)</option>
+                                    <option value="bf_emma">bf_emma (UK Female)</option>
+                                    <option value="bf_clara">bf_clara (UK Female)</option>
+                                    <option value="am_adam">am_adam (US Male)</option>
+                                    <option value="am_michael">am_michael (US Male)</option>
+                                    <option value="pm_alex">pm_alex (Brazilian Portuguese Male)</option>
+                                    <option value="ef_dora">ef_dora (Spanish Female)</option>
+                                    <option value="ff_siwis">ff_siwis (French Female)</option>
+                                    <option value="hf_alpha">hf_alpha (Hindi Female)</option>
+                                    <option value="hf_beta">hf_beta (Hindi Female)</option>
+                                    <option value="if_sara">if_sara (Italian Female)</option>
+                                    <option value="jf_alpha">jf_alpha (Japanese Female)</option>
+                                    <option value="zf_xiaoxiao">zf_xiaoxiao (Mandarin Chinese Female)</option>
+                                </select>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="sandbox-lang" class="block text-xs font-semibold text-gray-400 mb-1.5">Language Code</label>
+                                    <input type="text" id="sandbox-lang" value="a" readonly class="w-full bg-zinc-950 border border-darkBorder rounded-lg px-3.5 py-2.5 text-gray-400 text-sm focus:outline-none cursor-not-allowed">
+                                </div>
+                                <div>
+                                    <label for="sandbox-speed" class="block text-xs font-semibold text-gray-400 mb-1.5">Speed: <span id="speed-val">1.0</span>x</label>
+                                    <input type="range" id="sandbox-speed" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('speed-val').innerText = this.value" class="w-full h-2 bg-zinc-900 rounded-lg appearance-none cursor-pointer accent-accentBlue mt-3">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="sandbox-text" class="block text-xs font-semibold text-gray-400 mb-1.5">Text to Synthesize</label>
+                                <textarea id="sandbox-text" rows="5" class="w-full bg-zinc-900 border border-darkBorder rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-accentBlue" placeholder="Enter text here..."></textarea>
+                            </div>
+
+                            <button onclick="generateSandboxTTS()" id="sandbox-generate-btn" class="w-full bg-accentBlue hover:bg-accentBlueHover text-white text-sm font-semibold py-3 rounded-lg transition duration-150 flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Synthesize Speech</span>
+                            </button>
+                        </div>
+
+                        <!-- Audio Player Panel -->
+                        <div class="w-full lg:w-96 bg-zinc-950 border border-darkBorder rounded-xl p-6 flex flex-col justify-center items-center text-center space-y-6">
+                            <div class="bg-zinc-900 p-6 rounded-full text-accentBlue text-4xl border border-darkBorder/50 shadow-inner">
+                                <i class="fa-solid fa-volume-high" id="sandbox-audio-icon"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white uppercase tracking-wider">Audio Output</h4>
+                                <p class="text-xs text-gray-400 mt-1" id="sandbox-status-text">Ready to synthesize speech</p>
+                            </div>
+                            <div class="w-full pt-4 border-t border-darkBorder/40">
+                                <audio id="sandbox-audio-player" class="w-full hidden" controls></audio>
+                                <div id="audio-placeholder" class="text-xs text-zinc-600 italic">No audio loaded yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -427,7 +496,8 @@
             const titles = {
                 'dashboard': 'Dashboard Overview',
                 'keys': 'API Key Management',
-                'logs': 'Recent API Activity Logs'
+                'logs': 'Recent API Activity Logs',
+                'sandbox': 'Text-to-Speech Sandbox'
             };
             document.getElementById("pageTitle").innerText = titles[tabId];
             
@@ -455,6 +525,79 @@
                 loadKeysData();
             } else if (currentTab === 'logs') {
                 loadLogsData();
+            } else if (currentTab === 'sandbox') {
+                // Static sandbox panel
+            }
+        }
+
+        // Sandbox Event Handlers
+        function updateLangCodeFromVoice() {
+            const voice = document.getElementById("sandbox-voice").value;
+            const langInput = document.getElementById("sandbox-lang");
+            langInput.value = voice[0] || "a";
+        }
+
+        async function generateSandboxTTS() {
+            const text = document.getElementById("sandbox-text").value.trim();
+            const voice = document.getElementById("sandbox-voice").value;
+            const lang_code = document.getElementById("sandbox-lang").value;
+            const speed = parseFloat(document.getElementById("sandbox-speed").value);
+            
+            const btn = document.getElementById("sandbox-generate-btn");
+            const statusText = document.getElementById("sandbox-status-text");
+            const audioPlayer = document.getElementById("sandbox-audio-player");
+            const placeholder = document.getElementById("audio-placeholder");
+            const audioIcon = document.getElementById("sandbox-audio-icon");
+            
+            if (!text) {
+                alert("Please enter some text to synthesize.");
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.classList.add("opacity-50", "cursor-not-allowed");
+            statusText.innerText = "Synthesizing speech... Please wait.";
+            audioIcon.className = "fa-solid fa-spinner fa-spin text-accentBlue";
+            audioPlayer.classList.add("hidden");
+            placeholder.classList.remove("hidden");
+            placeholder.innerText = "Generating...";
+            
+            try {
+                const response = await fetch('/admin/tts', {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        text: text,
+                        voice: voice,
+                        speed: speed,
+                        lang_code: lang_code
+                    })
+                });
+                
+                if (response.ok) {
+                    const audioBlob = await response.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.classList.remove("hidden");
+                    placeholder.classList.add("hidden");
+                    statusText.innerText = "Audio synthesized successfully!";
+                    audioIcon.className = "fa-solid fa-circle-play text-green-400";
+                    audioPlayer.play();
+                } else {
+                    const err = await response.json();
+                    statusText.innerText = "Failed to generate speech";
+                    audioIcon.className = "fa-solid fa-circle-exclamation text-red-400";
+                    alert("TTS synthesis failed: " + (err.detail || response.statusText));
+                }
+            } catch (e) {
+                console.error(e);
+                statusText.innerText = "Request error encountered";
+                audioIcon.className = "fa-solid fa-circle-exclamation text-red-400";
+                alert("An error occurred during the TTS request.");
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove("opacity-50", "cursor-not-allowed");
             }
         }
 

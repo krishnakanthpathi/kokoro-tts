@@ -1,9 +1,12 @@
 import secrets
-from fastapi import APIRouter, Depends, HTTPException, Query
+import asyncio
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any
 from app.database import get_db_connection
 from app.auth import verify_admin
+from app.api.models import TTSRequest
+from app.core.tts_engine import tts_engine
 
 router = APIRouter()
 
@@ -211,3 +214,24 @@ def list_logs(
         return logs
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database log retrieval error: {str(e)}")
+
+@router.post("/tts")
+async def admin_generate_tts(
+    tts_request: TTSRequest,
+    admin_auth: bool = Depends(verify_admin)
+):
+    if not tts_request.text.strip():
+        raise HTTPException(status_code=400, detail="Text parameter cannot be empty")
+        
+    try:
+        # Run heavy TTS synthesis in a thread pool to avoid blocking the event loop
+        wav_bytes = await asyncio.to_thread(
+            tts_engine.synthesize,
+            text=tts_request.text,
+            voice=tts_request.voice,
+            speed=tts_request.speed,
+            lang_code=tts_request.lang_code
+        )
+        return Response(content=wav_bytes, media_type="audio/wav")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"TTS generation error: {str(e)}")
